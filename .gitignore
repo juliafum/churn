@@ -1,0 +1,14 @@
+
+# Environments
+.env
+.venv
+env/
+venv/
+
+# vscode
+.vscode
+
+# data folder (logging and parque files)
+# data/
+# *.parquet
+# *.csv
