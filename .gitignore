@@ -12,3 +12,8 @@ venv/
 # data/
 # *.parquet
 # *.csv
+
+# DLL files
+__pycache__/
+.ipynb_checlpoints/
+
