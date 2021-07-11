@@ -9,7 +9,7 @@ date: July 10, 2021
 
 # import libraries
 
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, plot_roc_curve
 from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
@@ -40,11 +40,11 @@ def perform_eda(df, DO_PLOT=0):
     '''
     perform eda on df and save figures to images folder
     input:
-                    df: pandas dataframe
-                    do_plot: plot condition
+                        df: pandas dataframe
+                        do_plot: plot condition
 
     output:
-                    None
+                        None
     '''
 
     df['Churn'] = df['Attrition_Flag'].apply(
@@ -85,11 +85,11 @@ def encoder_helper(df, category_lst):
     propotion of churn for each category - associated with cell 15 from the notebook
 
     input:
-                    df: pandas dataframe
-                    category_lst: list of columns that contain categorical features
+                        df: pandas dataframe
+                        category_lst: list of columns that contain categorical features
 
     output:
-                    df: pandas dataframe with new columns for
+                        df: pandas dataframe with new columns for
     '''
     for category in category_lst:
         tmp = []
@@ -106,13 +106,13 @@ def encoder_helper(df, category_lst):
 def perform_feature_engineering(df):
     '''
     input:
-                      df: pandas dataframe
+                        df: pandas dataframe
 
     output:
-                      X_train: X training data
-                      X_test: X testing data
-                      y_train: y training data
-                      y_test: y testing data
+                        X_train: X training data
+                        X_test: X testing data
+                        y_train: y training data
+                        y_test: y testing data
     '''
     keep_cols = [
         'Customer_Age',
@@ -155,15 +155,15 @@ def classification_report_image(y_train,
     produces classification report for training and testing results and stores report as image
     in images folder
     input:
-                    y_train: training response values
-                    y_test:  test response values
-                    y_train_preds_lr: training predictions from logistic regression
-                    y_train_preds_rf: training predictions from random forest
-                    y_test_preds_lr: test predictions from logistic regression
-                    y_test_preds_rf: test predictions from random forest
+                        y_train: training response values
+                        y_test:  test response values
+                        y_train_preds_lr: training predictions from logistic regression
+                        y_train_preds_rf: training predictions from random forest
+                        y_test_preds_lr: test predictions from logistic regression
+                        y_test_preds_rf: test predictions from random forest
 
     output:
-                     None
+                        None
     '''
 
     plt.rc('figure', figsize=(7, 5))
@@ -197,19 +197,19 @@ def feature_importance_plot(model, x_data, output_pth):
     '''
     creates and stores the feature importances in pth
     input:
-                    model: model object containing feature_importances_
-                    X_data: pandas dataframe of Xvalues
-                    output_pth: path to store the figure
+                        model: model object containing feature_importances_
+                        X_data: pandas dataframe of Xvalues
+                        output_pth: path to store the figure
 
     output:
-                     None
+                        None
     '''
 
     importances = model.feature_importances_
     indices = np.argsort(importances)[::-1]
     names = [x_data.columns[i] for i in indices]
 
-    plt.figure(figsize=(20, 6))
+    plt.figure(figsize=(20, 10))
     plt.title("Feature Importance")
     plt.ylabel('Importance')
     plt.bar(range(x_data.shape[1]), importances[indices])
@@ -223,13 +223,13 @@ def train_models(X_train, X_test, y_train, y_test, DO_TRAIN=0):
     '''
     train, store model results: images + scores, and store models
     input:
-                      X_train: Xtraining data
-                      X_test: Xtesting data
-                      y_train: y training data
-                      y_test: y testing data
-                      do_train: train condition
+                        X_train: Xtraining data
+                        X_test: Xtesting data
+                        y_train: y training data
+                        y_test: y testing data
+                        do_train: train condition
     output:
-                      None
+                        None
     '''
     if DO_TRAIN == 1:
 
@@ -274,8 +274,17 @@ def train_models(X_train, X_test, y_train, y_test, DO_TRAIN=0):
                                 y_test_preds_rf)
 
     # save feature importance
-
     feature_importance_plot(rfc_model, X_train, './images/results/')
+
+    # save ROC curve plot
+    lr_plot = plot_roc_curve(lr_model, X_test, y_test)
+    plt.figure(figsize=(15, 8))
+    ax = plt.gca()
+    rfc_disp = plot_roc_curve(
+        rfc_model, X_test, y_test, ax=ax, alpha=0.8)
+    lr_plot.plot(ax=ax, alpha=0.8)
+    plt.savefig('./images/results/' + 'roc_curve_result.png')
+    plt.close()
 
 
 if __name__ == "__main__":
@@ -285,9 +294,9 @@ if __name__ == "__main__":
                     "Marital_Status", "Income_Category", "Card_Category"]
 
     df = import_data(PTH)
-    DO_PLOT = 1
+    DO_PLOT = 0
     df = perform_eda(df, DO_PLOT)
     df = encoder_helper(df, category_lst)
     X_train, X_test, y_train, y_test = perform_feature_engineering(df)
-    DO_TRAIN = 1
+    DO_TRAIN = 0
     train_models(X_train, X_test, y_train, y_test, DO_TRAIN)

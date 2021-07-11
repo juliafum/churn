@@ -1,3 +1,10 @@
+# pylint: disable=W0621, R0913, C0103
+'''
+Testing & Logging of the Churn prediciton library 
+author: Julia
+date: July 10, 2021
+'''
+
 import os
 import logging
 import churn_library as cls
@@ -11,7 +18,12 @@ logging.basicConfig(
 
 def test_import(import_data):
     '''
-    test data import - this example is completed for you to assist with the other test functions
+    test data import 
+    input:
+                        import_data: method to import data
+
+    output: 
+                        None
     '''
     try:
         df = import_data("./data/bank_data.csv")
@@ -32,6 +44,14 @@ def test_import(import_data):
 def test_eda(perform_eda):
     '''
     test perform eda function
+    test EDA artifacts available
+    input:
+                        perform_eda: method to perform eda
+
+    output: 
+                        None
+
+
     '''
     df = cls.import_data("./data/bank_data.csv")
     try:
@@ -59,6 +79,12 @@ def test_eda(perform_eda):
 def test_encoder_helper(encoder_helper):
     '''
     test encoder helper
+    test df has columns with _Churn suffix
+    input:
+                        perform_eda: method to encode variables
+
+    output: 
+                        None
     '''
     df = cls.import_data("./data/bank_data.csv")
     df = cls.perform_eda(df)
@@ -82,6 +108,13 @@ def test_encoder_helper(encoder_helper):
 def test_perform_feature_engineering(perform_feature_engineering):
     '''
     test perform_feature_engineering
+    input:
+                        perform_feature_engineering: method to feature engineering
+
+    output: 
+                        None
+
+
     '''
     df = cls.import_data("./data/bank_data.csv")
     df = cls.perform_eda(df)
@@ -111,6 +144,12 @@ def test_perform_feature_engineering(perform_feature_engineering):
 def test_train_models(train_models):
     '''
     test train_models
+    input:
+                        train_models: method to train models
+
+    output: 
+                        None
+
     '''
     df = cls.import_data("./data/bank_data.csv")
     df = cls.perform_eda(df)
